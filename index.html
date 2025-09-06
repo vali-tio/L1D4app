@@ -363,7 +363,16 @@
             <div style="display:flex;gap:8px;margin-top:6px"><input id="admin-pass" placeholder="Password baru" type="password"><button id="admin-set">Set</button></div>
             <div class="hint">Gunakan tombol "Masuk Admin" untuk membuka fitur premium yang terkunci.</div>
           </div>
-          <div style="margin-top:10px">
+          
+<div style="margin-top:12px">
+  <label class="muted">Reset semua data aplikasi</label>
+  <div class="controls">
+    <button id="admin-reset-all" class="danger">RESET APLIKASI</button>
+  </div>
+  <div class="hint">⚠️ Semua data pelanggan, transaksi, layanan, termasuk status premium akan dihapus.</div>
+</div>
+
+<div style="margin-top:10px">
             <label class="muted">Hapus semua riwayat transaksi</label>
             <div class="controls"><button id="admin-del-all" class="danger">Hapus Semua (Y/N)</button></div>
           </div>
@@ -914,6 +923,22 @@ document.getElementById('admin-del-all').addEventListener('click',()=>{
   alert('Semua riwayat transaksi berhasil DIHAPUS!');
 });
 
+
+// ================== RESET APLIKASI =======================
+document.getElementById('admin-reset-all').addEventListener('click',()=>{
+  if(!confirm('Yakin ingin MERESSET aplikasi ke kondisi awal?')) return;
+  const sure = prompt('Ketik RESET untuk konfirmasi ulang:');
+  if(sure!=='RESET'){
+    alert('Dibatalkan.');
+    return;
+  }
+  localStorage.clear();
+  DB = defaultDB();
+  saveDB();
+  alert('Aplikasi berhasil direset. Silakan refresh halaman.');
+  location.reload();
+});
+
 // Admin: state lock/unlock buttons
 document.getElementById('admin-unlock').addEventListener('click',()=>{requireAdminAuth();});
 document.getElementById('admin-lock').addEventListener('click',()=>{lockAdminNow(); alert('Admin dikunci kembali')});
@@ -952,7 +977,7 @@ let uploadedCodes = [
 "9993962038"
 ]; document.getElementById('license-file').addEventListener('change',e=>{const f=e.target.files[0]; if(!f) return; const reader=new FileReader(); reader.onload=ev=>{uploadedCodes = ev.target.result.split(/\r?\n/).map(s=>s.trim()).filter(Boolean); alert('File kode berhasil diunggah ('+uploadedCodes.length+')');}; reader.readAsText(f);});
 
-document.getElementById('license-activate').addEventListener('click',()=>{const code=document.getElementById('license-input').value.trim(); if(!code) return alert('Masukkan kode'); if(uploadedCodes.includes(code)){DB.meta.licenses = DB.meta.licenses||[]; DB.meta.licenses.push(code);DB.meta.activatedDevice = DB.meta.activatedDevice || {};DB.meta.activatedDevice[getDeviceId()] = code;uploadedCodes = uploadedCodes.filter(c=>c!==code);saveDB(); alert('Aktivasi berhasil: perangkat terikat');updatePremiumBadges(); updateAdminLockUI(); updateSplashContent();} else { alert('Kode tidak ditemukan dalam file yang diunggah. Anda bisa upload file teks yang berisi daftar kode satu baris per kode.') } });
+document.getElementById('license-activate').addEventListener('click',()=>{const code=document.getElementById('license-input').value.trim(); if(!code) return alert('Masukkan kode'); if(uploadedCodes.includes(code)){DB.meta.licenses = DB.meta.licenses||[]; DB.meta.licenses.push(code);DB.meta.activatedDevice = DB.meta.activatedDevice || {};DB.meta.activatedDevice[getDeviceId()] = code;uploadedCodes = uploadedCodes.filter(c=>c!==code);saveDB(); backupPremiumCode(code); alert('Aktivasi berhasil: perangkat terikat');updatePremiumBadges(); updateAdminLockUI(); updateSplashContent();} else { alert('Kode tidak ditemukan dalam file yang diunggah. Anda bisa upload file teks yang berisi daftar kode satu baris per kode.') } });
 
 // Business data (locked for premium + admin auth)
 document.getElementById('biz-save').addEventListener('click',()=>{
@@ -977,6 +1002,13 @@ document.getElementById('qris-file').addEventListener('change',e=>{
 if(DB.meta.qris){document.getElementById('qris-preview').innerHTML = `<img src="${DB.meta.qris}" style="max-width:100%;border-radius:8px"/>`}
 
 // Backup & Restore
+
+function backupPremiumCode(code){
+  const data = { device: getDeviceId(), code };
+  download('premium_backup_'+getDeviceId()+'.json', JSON.stringify(data));
+  alert('Backup premium tersimpan. Simpan file ini agar premium tidak hilang walaupun storage terhapus.');
+}
+
 function download(filename, text){const a=document.createElement('a');a.href = 'data:application/json;charset=utf-8,'+encodeURIComponent(text);a.download=filename;document.body.appendChild(a);a.click();a.remove();}
 document.getElementById('btn-backup').addEventListener('click',()=>{download('backup_kasir_laundry_'+(new Date()).toISOString().slice(0,10)+'.json', JSON.stringify(DB,null,2))});
 
