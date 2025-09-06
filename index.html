@@ -368,6 +368,10 @@
             <div class="controls"><button id="admin-del-all" class="danger">Hapus Semua (Y/N)</button></div>
           </div>
           <div style="margin-top:10px">
+            <label class="muted">Reset semua data (kembali ke default)</label>
+            <div class="controls"><button id="admin-reset" class="danger">Reset Data</button></div>
+          </div>
+          <div style="margin-top:10px">
             <label class="muted">Upload file kode lisensi (satu kode per baris)</label>
             <input type="file" id="license-file" accept=".txt" style="display:none;">
             <div class="muted small">Setelah upload, masukkan satu kode ke kolom aktivasi untuk mengikat perangkat.</div>
@@ -671,6 +675,9 @@ function showStrukPreview(tx){
     html+=`<div class="hr"></div><div class="muted small">Bayar via QRIS:</div>
       <img src="${DB.meta.qris}" style="max-width:100%;border-radius:8px;margin-top:6px"/>`;
   } else if(premium){
+    if(DB.meta.qris){
+      alert('QRIS aktif dan siap digunakan!');
+    }
     html+=`<div class="hr"></div><div class="muted small">QRIS belum diunggah.</div>`;
   }
   p.innerHTML=html
@@ -740,6 +747,9 @@ function buildWhatsAppReceiptText(tx){
 
   const extras = [];
   if(premium){
+    if(DB.meta.qris){
+      alert('QRIS aktif dan siap digunakan!');
+    }
     if(DB.meta.qris){ extras.push('Pembayaran via QRIS tersedia di kasir.'); }
     else { extras.push('QRIS belum tersedia.'); }
   }
@@ -914,6 +924,24 @@ document.getElementById('admin-del-all').addEventListener('click',()=>{
   alert('Semua riwayat transaksi berhasil DIHAPUS!');
 });
 
+
+
+// ================== RESET DATA PENUH ===========================
+document.getElementById('admin-reset').addEventListener('click',()=>{
+  if(!confirm('Yakin ingin RESET SEMUA DATA aplikasi?')) return;
+  const sure = prompt('Ketik RESET untuk konfirmasi:');
+  if(sure!=='RESET'){
+    alert('Dibatalkan.');
+    return;
+  }
+  DB = defaultDB();
+  saveDB();
+  renderAll();
+  updatePremiumBadges();
+  updateAdminLockUI();
+  updateSplashContent();
+  alert('Semua data berhasil direset ke kondisi awal!');
+});
 // Admin: state lock/unlock buttons
 document.getElementById('admin-unlock').addEventListener('click',()=>{requireAdminAuth();});
 document.getElementById('admin-lock').addEventListener('click',()=>{lockAdminNow(); alert('Admin dikunci kembali')});
@@ -1041,6 +1069,9 @@ function updatePremiumBadges(){
   const top = document.getElementById('badge-premium-top');
   const dash = document.getElementById('dashboard-premium-badge');
   if(premium){
+    if(DB.meta.qris){
+      alert('QRIS aktif dan siap digunakan!');
+    }
     badge.className='badge-premium'; badge.textContent='PREMIUM';
     top.className='badge-premium'; top.textContent='PREMIUM';
     if(dash){ dash.className='badge-premium'; dash.textContent='PREMIUM'; }
@@ -1094,6 +1125,9 @@ function updateSplashContent(){
   const title = document.getElementById('splash-biz');
   const sub = document.getElementById('splash-biz-sub');
   if(premium){
+    if(DB.meta.qris){
+      alert('QRIS aktif dan siap digunakan!');
+    }
     title.textContent = DB.meta.bizName||'Usaha Laundry Anda';
     sub.textContent = [DB.meta.bizPhone, DB.meta.bizPlace].filter(Boolean).join(' • ') || 'Isi data usaha di Admin agar tampil di struk.';
     document.getElementById('splash-premium-info').textContent = 'Status: PREMIUM aktif';
