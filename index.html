@@ -933,6 +933,7 @@ document.getElementById('admin-reset-all').addEventListener('click',()=>{
     return;
   }
   localStorage.clear();
+  localStorage.removeItem(PREMIUM_KEY);
   DB = defaultDB();
   saveDB();
   alert('Aplikasi berhasil direset. Silakan refresh halaman.');
@@ -942,6 +943,24 @@ document.getElementById('admin-reset-all').addEventListener('click',()=>{
 // Admin: state lock/unlock buttons
 document.getElementById('admin-unlock').addEventListener('click',()=>{requireAdminAuth();});
 document.getElementById('admin-lock').addEventListener('click',()=>{lockAdminNow(); alert('Admin dikunci kembali')});
+
+
+const PREMIUM_KEY = 'kasir_laundry_premium';
+
+function savePremiumState(){
+  if(DB.meta.activatedDevice){
+    localStorage.setItem(PREMIUM_KEY, JSON.stringify(DB.meta.activatedDevice));
+  }
+}
+
+function loadPremiumState(){
+  try {
+    const s = localStorage.getItem(PREMIUM_KEY);
+    if(s){
+      DB.meta.activatedDevice = JSON.parse(s);
+    }
+  } catch(e){}
+}
 
 // Admin: set password
 document.getElementById('admin-set').addEventListener('click',()=>{
@@ -977,7 +996,7 @@ let uploadedCodes = [
 "9993962038"
 ]; document.getElementById('license-file').addEventListener('change',e=>{const f=e.target.files[0]; if(!f) return; const reader=new FileReader(); reader.onload=ev=>{uploadedCodes = ev.target.result.split(/\r?\n/).map(s=>s.trim()).filter(Boolean); alert('File kode berhasil diunggah ('+uploadedCodes.length+')');}; reader.readAsText(f);});
 
-document.getElementById('license-activate').addEventListener('click',()=>{const code=document.getElementById('license-input').value.trim(); if(!code) return alert('Masukkan kode'); if(uploadedCodes.includes(code)){DB.meta.licenses = DB.meta.licenses||[]; DB.meta.licenses.push(code);DB.meta.activatedDevice = DB.meta.activatedDevice || {};DB.meta.activatedDevice[getDeviceId()] = code;uploadedCodes = uploadedCodes.filter(c=>c!==code);saveDB(); backupPremiumCode(code); alert('Aktivasi berhasil: perangkat terikat');updatePremiumBadges(); updateAdminLockUI(); updateSplashContent();} else { alert('Kode tidak ditemukan dalam file yang diunggah. Anda bisa upload file teks yang berisi daftar kode satu baris per kode.') } });
+document.getElementById('license-activate').addEventListener('click',()=>{const code=document.getElementById('license-input').value.trim(); if(!code) return alert('Masukkan kode'); if(uploadedCodes.includes(code)){DB.meta.licenses = DB.meta.licenses||[]; DB.meta.licenses.push(code);DB.meta.activatedDevice = DB.meta.activatedDevice || {};DB.meta.activatedDevice[getDeviceId()] = code;uploadedCodes = uploadedCodes.filter(c=>c!==code);saveDB(); savePremiumState(); backupPremiumCode(code); alert('Aktivasi berhasil: perangkat terikat');updatePremiumBadges(); updateAdminLockUI(); updateSplashContent();} else { alert('Kode tidak ditemukan dalam file yang diunggah. Anda bisa upload file teks yang berisi daftar kode satu baris per kode.') } });
 
 // Business data (locked for premium + admin auth)
 document.getElementById('biz-save').addEventListener('click',()=>{
@@ -1016,7 +1035,7 @@ document.getElementById('btn-restore').addEventListener('click',()=>{const inp=d
 
 // Restore on load
 let splashTimeout = null;
-window.addEventListener('load',()=>{
+window.addEventListener('load',()=>{ loadPremiumState();
   updatePremiumBadges();
   renderAll();
   updateAdminLockUI();
