@@ -111,7 +111,23 @@
       transition:background 0.2s;
     }
     .theme-toggle-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;}
-  </style>
+  
+    /* Custom warna untuk status & input */
+    #tx-masuk { border:2px solid #0ea5e9; background:rgba(14,165,233,0.1); } /* biru */
+    #tx-selesai { border:2px solid #8b5cf6; background:rgba(139,92,246,0.1); } /* ungu */
+    #tx-save { background:#dc2626; color:white; border:none; } /* merah */
+    .status-chip { display:inline-block; padding:4px 8px; border-radius:8px; font-size:12px; font-weight:600; }
+    .status-belum { background:rgba(234,179,8,0.15); color:#ca8a04; }
+    .status-lunas { background:rgba(34,197,94,0.15); color:#16a34a; }
+
+
+/* PATCH: make transaction lists avoid causing horizontal page swipe on touch devices */
+#tx-layanan, #tx-cart {
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
+}
+
+</style>
 </head>
 <body>
 <!-- SPLASH OVERLAY -->
@@ -318,7 +334,15 @@
       <h3>Riwayat Transaksi</h3>
       <div class="row">
         <div style="flex:1">
-          <div class="row"><input id="riw-search" placeholder="Cari riwayat..."><button id="riw-filter-wa">Kirim Struk via WA (pilih)</button></div>
+          <div class="row" style="gap:8px">
+            <input id="riw-search" placeholder="Cari riwayat...">
+            <div style="display:flex;gap:6px;align-items:center">
+              <button id="riw-filter-all" class="small active">Semua</button>
+              <button id="riw-filter-belum" class="small">Belum Lunas</button>
+              <button id="riw-filter-lunas" class="small">Lunas</button>
+            </div>
+            <button id="riw-filter-wa">Kirim Struk via WA (pilih)</button>
+          </div>
           <div class="list" id="riw-list" style="margin-top:10px;max-height:360px"></div>
         </div>
         <div style="width:320px">
@@ -444,7 +468,7 @@ function saveDB(){localStorage.setItem(DB_KEY, JSON.stringify(DB))}
 function loadDB(){try{const s=localStorage.getItem(DB_KEY);if(s) return JSON.parse(s)}catch(e){} return defaultDB()}
 function defaultDB(){return{
   meta:{ownerPhone:'',bizName:'',bizPlace:'',qris:null,adminPass:null,licenses:[],activatedDevice:null,bizPhone:''},
-  customers:[],employees:[],services:{biasa: [{id:genId(),name:'Cuci Kering',price:4000},{id:genId(),name:'Setrika',price:4000},{id:genId(),name:'Cuci+Setrika',price:8000}],ekspres:[{id:genId(),name:'Cuci Kering',price:6000},{id:genId(),name:'Setrika',price:6000},{id:genId(),name:'Cuci+Setrika',price:8000}],tambahan:[{id:genId(),name:'Selimut',price:15000},{id:genId(),name:'Hordeng',price:15000},{id:genId(),name:'Jas',price:10000},{id:genId(),name:'Bed Cover',price:20000}]},
+  customers:[],employees:[],services:{biasa: [{id:genId(),name:'Cuci Kering',price:4000},{id:genId(),name:'Setrika',price:4000},{id:genId(),name:'Cuci+Setrika',price:6000}],ekspres:[{id:genId(),name:'Cuci Kering',price:6000},{id:genId(),name:'Setrika',price:6000},{id:genId(),name:'Cuci+Setrika',price:8000}],tambahan:[{id:genId(),name:'Selimut',price:15000},{id:genId(),name:'Hordeng',price:15000},{id:genId(),name:'Jas',price:10000},{id:genId(),name:'Bed Cover',price:20000}]},
   transactions:[],
   sentStrukIds:[], // avoid duplicates
 }}
@@ -519,6 +543,24 @@ function showView(name){
 // Render functions
 function renderAll(){renderCustomers();renderEmployees();renderServices();renderTxForm();renderRiwayat();updatePremiumBadges();updateBizPrefills();}
 
+// Setup riwayat filter buttons
+(function(){
+  function qsel(id){return document.getElementById(id)}
+  function setup(){
+    const a=qsel('riw-filter-all'), b=qsel('riw-filter-belum'), c=qsel('riw-filter-lunas');
+    if(!a||!b||!c) return;
+    function setActive(el){[a,b,c].forEach(x=>x.classList.remove('active')); el.classList.add('active');}
+    a.addEventListener('click',()=>{setActive(a);renderRiwayat();});
+    b.addEventListener('click',()=>{setActive(b);renderRiwayat();});
+    c.addEventListener('click',()=>{setActive(c);renderRiwayat();});
+    // also trigger search input to re-render on change
+    const s = qsel('riw-search'); if(s) s.addEventListener('input', ()=>renderRiwayat());
+  }
+  // attempt setup after small delay in case elements not created yet
+  setTimeout(setup,200);
+})();
+
+
 // Customers
 let editingCustomer=null;
 document.getElementById('pel-add').addEventListener('click',()=>{editingCustomer=null;document.getElementById('pel-name').value='';document.getElementById('pel-phone').value='';});
@@ -580,7 +622,7 @@ document.getElementById('tx-clear').addEventListener('click',()=>{if(confirm('Be
 document.getElementById('tx-save').addEventListener('click',()=>{
   if(CART.length===0) return alert('Keranjang kosong');
   const pelangganId=document.getElementById('tx-pelanggan').value; const karId=document.getElementById('tx-karyawan').value; const masuk=document.getElementById('tx-masuk').value; const selesai=document.getElementById('tx-selesai').value; const note=document.getElementById('tx-note').value;
-  const tx={id:genId(),pelangganId,karId,items:CART.map(i=>({name:i.name,price:i.price,q:i.q,cat:i.cat})),masuk,selesai,note,createdAt:new Date().toISOString()};
+  const tx={id:genId(),pelangganId,karId,items:CART.map(i=>({name:i.name,price:i.price,q:i.q,cat:i.cat})),masuk,selesai,note,createdAt:new Date().toISOString(),status:'Belum Lunas'};
   DB.transactions.push(tx); saveDB(); CART=[]; renderCart(); alert('Transaksi disimpan'); renderRiwayat();
 });
 
@@ -590,9 +632,18 @@ function renderRiwayat(){
   const el=document.getElementById('riw-list');
   el.innerHTML='';
   const q=document.getElementById('riw-search')?document.getElementById('riw-search').value.trim().toLowerCase():'';
+  // get selected filter from buttons
+  const btnAll = document.getElementById('riw-filter-all');
+  const btnBelum = document.getElementById('riw-filter-belum');
+  const btnLunas = document.getElementById('riw-filter-lunas');
+  const activeFilter = btnBelum && btnBelum.classList.contains('active') ? 'Belum Lunas' : (btnLunas && btnLunas.classList.contains('active') ? 'Lunas' : 'all');
+
   let data = DB.transactions.slice().reverse().filter(tx=>{
-    if(!q) return true;
-    return (tx.id.includes(q) || (tx.note||'').toLowerCase().includes(q));
+    if(!q && activeFilter==='all') return true;
+    const matchesQ = !q || tx.id.includes(q) || (tx.note||'').toLowerCase().includes(q) || (tx.pelangganId && (DB.customers.find(c=>c.id===tx.pelangganId)||{}).name||'').toLowerCase().includes(q);
+    if(!matchesQ) return false;
+    if(activeFilter==='all') return true;
+    return (tx.status || 'Belum Lunas') === activeFilter;
   });
   if(data.length === 0){
     el.innerHTML = `<div class="muted">Belum ada transaksi/riwayat ditemukan.</div>`;
@@ -608,12 +659,21 @@ function renderRiwayat(){
     row.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center">
       <div>
         <strong>${tx.id}</strong>
-        <div class="muted small">${tx.createdAt.split('T')[0]} • ${tx.items.length} item</div>
+        <div class="muted small">${tx.createdAt.split('T')[0]} • ${tx.items.length} item • <span class="small ${tx.status==='Lunas'?'status-lunas':'status-belum'}">${tx.status||'Belum Lunas'}</span></div>
       </div>
       <div><button class="small">Pilih</button></div>
       </div>`;
     el.appendChild(row)
   })
+}
+
+function markLunas(id){
+  const tx=DB.transactions.find(t=>t.id===id);
+  if(!tx) return;
+  tx.status='Lunas';
+  saveDB();
+  renderRiwayat();
+  alert('Transaksi ditandai Lunas');
 }
 
 // =================== STRUK PREVIEW MODERN ========================
@@ -634,8 +694,10 @@ function showStrukPreview(tx){
     </div>
     <div class="hr"></div>
     <div style="font-size:14px;margin-bottom:8px">
-      <div><b>ID:</b> ${tx.id}</div>
-      <div><b>Tanggal:</b> ${tx.createdAt.split('T')[0]}</div>
+      <div><b>ID:</b> ${tx.id}</div>\n      <div><b>Status:</b> <span class=\"status-chip ${tx.status==='Lunas'?'status-lunas':'status-belum'}\">${tx.status}</span></div>
+      <div><b>Tanggal:</b> ${tx.createdAt?tx.createdAt.split('T')[0]:'-'} </div>
+      <div><b>Masuk:</b> ${tx.masuk || '-'} </div>
+      <div><b>Selesai:</b> ${tx.selesai || '-'} </div>
       <div><b>Pelanggan:</b> ${escapeHtml(cust.name)} ${cust.phone?'('+escapeHtml(cust.phone)+')':''}</div>
       <div><b>Karyawan:</b> ${escapeHtml(kar.name)}</div>
     </div>
@@ -711,7 +773,9 @@ function buildReceiptBlock(tx){
 
   const header = [
     'ID       : '+tx.id,
-    'Tanggal  : '+tx.createdAt.split('T')[0],
+    'Tanggal  : '+(tx.createdAt?tx.createdAt.split('T')[0]:'-'),
+    'Masuk    : '+(tx.masuk||'-'),
+    'Selesai  : '+(tx.selesai||'-'),
     'Pelanggan: '+(cust.name||'-'),
     'Karyawan : '+(kar.name||'-'),
   ];
@@ -763,6 +827,7 @@ function buildWhatsAppReceiptText(tx){
 
   return [
     header,
+    'Status: '+(tx.status||'Belum Lunas'),
     '```',
     block,
     '```',
@@ -1035,7 +1100,9 @@ document.getElementById('btn-restore').addEventListener('click',()=>{const inp=d
 
 // Restore on load
 let splashTimeout = null;
-window.addEventListener('load',()=>{ loadPremiumState();
+window.addEventListener('load',()=>{ // load handler
+  try{ setupTxTouchPrevent(); }catch(e){}
+ loadPremiumState();
   updatePremiumBadges();
   renderAll();
   updateAdminLockUI();
@@ -1045,6 +1112,35 @@ window.addEventListener('load',()=>{ loadPremiumState();
 })
 
 // Splash overlay timer
+
+// Setup touch handlers for transaksi lists to prevent accidental horizontal page swipe
+function setupTxTouchPrevent(){
+  function applyTo(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    let sx=0, sy=0;
+    el.addEventListener('touchstart', function(e){
+      const t = e.touches && e.touches[0];
+      if(t){ sx = t.clientX; sy = t.clientY; }
+    }, {passive:true});
+    el.addEventListener('touchmove', function(e){
+      const t = e.touches && e.touches[0];
+      if(!t) return;
+      const dx = Math.abs(t.clientX - sx);
+      const dy = Math.abs(t.clientY - sy);
+      // if horizontal movement dominates, prevent default to stop page swipe
+      if(dx > dy && dx > 6){
+        e.preventDefault();
+      }
+    }, {passive:false});
+  }
+  applyTo('tx-layanan');
+  applyTo('tx-cart');
+}
+// call setup on load (also try immediately)
+try{ setupTxTouchPrevent(); }catch(e){}
+
+
 function showSplash(){
   const o=document.getElementById('splash-overlay');
   o.style.display='flex';
