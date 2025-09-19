@@ -744,7 +744,25 @@ function showStrukPreview(tx){
   } else if(premium){
     html+=`<div class="hr"></div><div class="muted small">QRIS belum diunggah.</div>`;
   }
-  p.innerHTML=html
+  p.innerHTML=html;
+  // Tambah tombol Tandai Lunas jika status belum lunas
+  if(tx.status !== 'Lunas'){
+    const btn = document.createElement('button');
+    btn.textContent = 'Tandai Lunas';
+    btn.className = 'primary';
+    btn.style.marginTop = '10px';
+    btn.addEventListener('click', ()=>{
+      const t = DB.transactions.find(x=>x.id===tx.id);
+      if(t){
+        t.status = 'Lunas';
+        saveDB();
+        renderRiwayat();
+        showStrukPreview(t);
+        alert('Transaksi berhasil ditandai Lunas');
+      }
+    });
+    p.appendChild(btn);
+  }
 }
 
 // =================== WA FORMAT MODERN ===========================
