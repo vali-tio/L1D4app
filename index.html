@@ -1,117 +1,157 @@
-<!DOCTYPE html><html lang="id"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Kasir Laundry (Offline)</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #0b1220;
-      --muted: #94a3b8;
-      --accent: #06b6d4;
-      --accent2: #8b5cf6;
-      --glass: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.06);
-      --text: #e6eef6;
-      --danger: #ffb4b4;
-      --danger-bg: rgba(255,80,80,0.12);
-      --hr: rgba(255,255,255,0.08);
-    }
-    body[data-theme="light"] {
-      --bg: #f7fafc;
-      --card: #fff;
-      --muted: #64748b;
-      --accent: #0ea5e9;
-      --accent2: #a78bfa;
-      --glass: rgba(16, 33, 56, 0.06);
-      --border: rgba(0,0,0,0.04);
-      --text: #273046;
-      --danger: #e11d48;
-      --danger-bg: rgba(225,29,72,0.08);
-      --hr: rgba(0,0,0,0.07);
-    }
-    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{margin:0;background:linear-gradient(180deg,var(--bg) 0%, var(--bg) 100%);color:var(--text);min-height:100vh;transition:background 0.3s, color 0.3s;}
-    .wrap{max-width:1100px;margin:18px auto;padding:18px}
-    header{display:flex;gap:12px;align-items:center}
-    h1{margin:0;font-size:20px}
-    .card{background:linear-gradient(180deg, var(--glass), transparent);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.06);border:1px solid var(--border);transition:background 0.3s, color 0.3s;}
-    .row{display:flex;gap:12px}
-    input,select,textarea,button{background:transparent;border:1px solid var(--border);padding:8px 10px;border-radius:8px;color:inherit;transition:background 0.2s, color 0.2s;}
-    input::placeholder{color:var(--muted)}
-    .flex{display:flex;align-items:center}
-    .spacer{flex:1}
-    nav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-    nav button{background:var(--glass);border:none;padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
-    nav button.active{color:white;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 6px 14px rgba(6,182,212,0.12)}
-    .list{max-height:320px;overflow:auto;margin-top:10px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;border-bottom:1px dashed var(--hr);text-align:left}
-    .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px}
-    .danger{background:var(--danger-bg);color:var(--danger)}
-    .muted{color:var(--muted);font-size:13px}
-    .small{font-size:13px}
-    .controls{display:flex;gap:8px;flex-wrap:wrap}
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
-    @media (max-width:720px){.row{flex-direction:column}}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kasir Laundry (Offline) - Perbaikan Riwayat</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #0b1220;
+            --muted: #94a3b8;
+            --accent: #06b6d4;
+            --accent2: #8b5cf6;
+            --glass: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.06);
+            --text: #e6eef6;
+            --danger: #ffb4b4;
+            --danger-bg: rgba(255,80,80,0.12);
+            --hr: rgba(255,255,255,0.08);
+        }
+        body[data-theme="light"] {
+            --bg: #f7fafc;
+            --card: #fff;
+            --muted: #64748b;
+            --accent: #0ea5e9;
+            --accent2: #a78bfa;
+            --glass: rgba(16, 33, 56, 0.06);
+            --border: rgba(0,0,0,0.04);
+            --text: #273046;
+            --danger: #e11d48;
+            --danger-bg: rgba(225,29,72,0.08);
+            --hr: rgba(0,0,0,0.07);
+        }
+        *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+        body{margin:0;background:linear-gradient(180deg,var(--bg) 0%, var(--bg) 100%);color:var(--text);min-height:100vh;transition:background 0.3s, color 0.3s;}
+        .wrap{max-width:1100px;margin:18px auto;padding:18px}
+        header{display:flex;gap:12px;align-items:center}
+        h1{margin:0;font-size:20px}
+        .card{background:linear-gradient(180deg, var(--glass), transparent);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.06);border:1px solid var(--border);transition:background 0.3s, color 0.3s;}
+        .row{display:flex;gap:12px}
+        input,select,textarea,button{background:transparent;border:1px solid var(--border);padding:8px 10px;border-radius:8px;color:inherit;transition:background 0.2s, color 0.2s;}
+        input::placeholder{color:var(--muted)}
+        .flex{display:flex;align-items:center}
+        .spacer{flex:1}
+        nav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+        nav button{background:var(--glass);border:none;padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+        nav button.active{color:white;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 6px 14px rgba(6,182,212,0.12)}
+        .list{max-height:320px;overflow:auto;margin-top:10px}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:8px;border-bottom:1px dashed var(--hr);text-align:left}
+        .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px}
+        .danger{background:var(--danger-bg);color:var(--danger)}
+        .muted{color:var(--muted);font-size:13px}
+        .small{font-size:13px}
+        .controls{display:flex;gap:8px;flex-wrap:wrap}
+        footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+        @media (max-width:720px){.row{flex-direction:column}}
 
-    .badge-premium{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      color:#0b1220; box-shadow:0 6px 14px rgba(6,182,212,0.18)
-    }
-    .badge-lite{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;
-      background:rgba(148,163,184,0.18); color:var(--text); border:1px solid var(--border)
-    }
+        .badge-premium{
+            display:inline-flex;align-items:center;gap:6px;
+            padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;
+            background:linear-gradient(90deg,var(--accent),var(--accent2));
+            color:#0b1220; box-shadow:0 6px 14px rgba(6,182,212,0.18)
+        }
+        .badge-lite{
+            display:inline-flex;align-items:center;gap:6px;
+            padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;
+            background:rgba(148,163,184,0.18); color:var(--text); border:1px solid var(--border)
+        }
 
-    .overlay{
-      position:fixed;inset:0;z-index:9999;
-      background:radial-gradient(1200px 400px at 10% 0%, rgba(6,182,212,0.16), transparent),
-                 radial-gradient(1000px 600px at 90% 100%, rgba(139,92,246,0.14), transparent),
-                 linear-gradient(180deg,var(--bg) 0%, var(--bg) 100%);
-      display:flex;align-items:center;justify-content:center;padding:18px;
-      animation:fadeIn .4s ease-out;
-    }
-    @keyframes fadeIn{from{opacity:0;transform:scale(0.99)}to{opacity:1;transform:scale(1)}}
-    .splash-card{
-      width:min(860px,100%); border-radius:14px; padding:18px;
-      background:linear-gradient(180deg, var(--glass), transparent);
-      border:1px solid var(--border); box-shadow:0 10px 30px rgba(2,6,23,0.08)
-    }
-    .splash-head{display:flex;gap:14px;align-items:center}
-    .logo-box{width:60px;height:60px;border-radius:12px;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
-    .splash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-top:12px}
-    @media(max-width:720px){.splash-grid{grid-template-columns:1fr}}
-    .hint{font-size:12px;color:var(--muted)}
-
-    .disabled{opacity:.6;pointer-events:none}
-    .lock-note{font-size:12px;color:var(--danger)}
-    .lock-chip{
-      display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;
-      background:var(--danger-bg); color:var(--danger); font-size:12px
-    }
-
-    .hr{height:1px;background:var(--hr);margin:8px 0}
-
-    /* Theme toggle */
-    .theme-toggle-btn{
-      margin-left:12px;
-      background:var(--glass);
-      border:none;
-      border-radius:8px;
-      font-size:18px;
-      width:40px; height:40px; display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-      color:var(--accent2);
-      transition:background 0.2s;
-    }
-    .theme-toggle-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;}
-  </style>
+        .status-chip { display:inline-block; padding:4px 8px; border-radius:8px; font-size:12px; font-weight:600; }
+        .status-belum { background:rgba(234,179,8,0.15); color:#ca8a04; }
+        .status-lunas { background:rgba(34,197,94,0.15); color:#16a34a; }
+        
+        .transaction-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: var(--glass);
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-controls select, .filter-controls input {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .theme-toggle-btn{
+            margin-left:12px;
+            background:var(--glass);
+            border:none;
+            border-radius:8px;
+            font-size:18px;
+            width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+            cursor:pointer;
+            color:var(--accent2);
+            transition:background 0.2s;
+        }
+        .theme-toggle-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;}
+        
+        /* Custom warna untuk status & input */
+        #tx-masuk { border:2px solid #0ea5e9; background:rgba(14,165,233,0.1); } /* biru */
+        #tx-selesai { border:2px solid #8b5cf6; background:rgba(139,92,246,0.1); } /* ungu */
+        #tx-save { background:#dc2626; color:white; border:none; } /* merah */
+        
+        .overlay{
+            position:fixed;inset:0;z-index:9999;
+            background:radial-gradient(1200px 400px at 10% 0%, rgba(6,182,212,0.16), transparent),
+                     radial-gradient(1000px 600px at 90% 100%, rgba(139,92,246,0.14), transparent),
+                     linear-gradient(180deg,var(--bg) 0%, var(--bg) 100%);
+            display:flex;align-items:center;justify-content:center;padding:18px;
+            animation:fadeIn .4s ease-out;
+        }
+        @keyframes fadeIn{from{opacity:0;transform:scale(0.99)}to{opacity:1;transform:scale(1)}}
+        .splash-card{
+            width:min(860px,100%); border-radius:14px; padding:18px;
+            background:linear-gradient(180deg, var(--glass), transparent);
+            border:1px solid var(--border); box-shadow:0 10px 30px rgba(2,6,23,0.08)
+        }
+        .splash-head{display:flex;gap:14px;align-items:center}
+        .logo-box{width:60px;height:60px;border-radius:12px;
+            background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+        .splash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-top:12px}
+        @media(max-width:720px){.splash-grid{grid-template-columns:1fr}}
+        .hint{font-size:12px;color:var(--muted)}
+    </style>
 </head>
 <body>
 <!-- SPLASH OVERLAY -->
@@ -313,20 +353,27 @@
       </div>
     </div>
 
-    <!-- RIWAYAT -->
+    <!-- RIWAYAT - PERBAIKAN UTAMA -->
     <div data-view="riwayat" class="card" style="margin-top:12px;display:none">
-      <h3>Riwayat Transaksi</h3>
-      <div class="row">
-        <div style="flex:1">
-          <div class="row"><input id="riw-search" placeholder="Cari riwayat..."><button id="riw-filter-wa">Kirim Struk via WA (pilih)</button></div>
-          <div class="list" id="riw-list" style="margin-top:10px;max-height:360px"></div>
+      <h3>Riwayat Transaksi (Telah Diperbaiki)</h3>
+      
+      <div class="filter-controls">
+        <div>
+          <label class="muted">Filter Status: </label>
+          <select id="riw-filter-status">
+            <option value="all">Semua Status</option>
+            <option value="Belum Lunas">Belum Lunas</option>
+            <option value="Lunas">Lunas</option>
+          </select>
         </div>
-        <div style="width:320px">
-          <h4>Preview Struk</h4>
-          <div id="struk-preview" class="card small" style="min-height:200px"></div>
-          <div style="margin-top:8px" class="controls"><button id="struk-send-wa">Kirim ke WA Pelanggan</button><button id="struk-send-owner">Kirim ke Owner</button></div>
+        <div>
+          <label class="muted">Cari: </label>
+          <input id="riw-search" placeholder="Cari ID atau nama...">
         </div>
+        <button id="riw-refresh">Refresh</button>
       </div>
+      
+      <div id="riw-list" style="max-height:500px; overflow-y:auto;"></div>
     </div>
 
     <!-- LAPORAN -->
@@ -364,15 +411,15 @@
             <div class="hint">Gunakan tombol "Masuk Admin" untuk membuka fitur premium yang terkunci.</div>
           </div>
           
-<div style="margin-top:12px">
-  <label class="muted">Reset semua data aplikasi</label>
-  <div class="controls">
-    <button id="admin-reset-all" class="danger">RESET APLIKASI</button>
-  </div>
-  <div class="hint">⚠️ Semua data pelanggan, transaksi, layanan, termasuk status premium akan dihapus.</div>
-</div>
+          <div style="margin-top:12px">
+            <label class="muted">Reset semua data aplikasi</label>
+            <div class="controls">
+              <button id="admin-reset-all" class="danger">RESET APLIKASI</button>
+            </div>
+            <div class="hint">⚠️ Semua data pelanggan, transaksi, layanan, termasuk status premium akan dihapus.</div>
+          </div>
 
-<div style="margin-top:10px">
+          <div style="margin-top:10px">
             <label class="muted">Hapus semua riwayat transaksi</label>
             <div class="controls"><button id="admin-del-all" class="danger">Hapus Semua (Y/N)</button></div>
           </div>
@@ -439,12 +486,14 @@ applyTheme(getTheme());
 // Simple offline app using localStorage
 const DB_KEY = 'kasir_laundry_db_v1';
 const DEV_KEY = 'kasir_laundry_device';
+const PREMIUM_KEY = 'kasir_laundry_premium';
+
 let DB = loadDB();
 function saveDB(){localStorage.setItem(DB_KEY, JSON.stringify(DB))}
 function loadDB(){try{const s=localStorage.getItem(DB_KEY);if(s) return JSON.parse(s)}catch(e){} return defaultDB()}
 function defaultDB(){return{
   meta:{ownerPhone:'',bizName:'',bizPlace:'',qris:null,adminPass:null,licenses:[],activatedDevice:null,bizPhone:''},
-  customers:[],employees:[],services:{biasa: [{id:genId(),name:'Cuci Kering',price:12000},{id:genId(),name:'Setrika',price:6000},{id:genId(),name:'Cuci+Setrika',price:17000}],ekspres:[],tambahan:[{id:genId(),name:'Selimut',price:20000},{id:genId(),name:'Hordeng',price:15000},{id:genId(),name:'Jas',price:25000},{id:genId(),name:'Bed Cover',price:30000}]},
+  customers:[],employees:[],services:{biasa: [{id:genId(),name:'Cuci Kering',price:4000},{id:genId(),name:'Setrika',price:4000},{id:genId(),name:'Cuci+Setrika',price:6000}],ekspres:[{id:genId(),name:'Cuci Kering',price:6000},{id:genId(),name:'Setrika',price:6000},{id:genId(),name:'Cuci+Setrika',price:8000}],tambahan:[{id:genId(),name:'Selimut',price:15000},{id:genId(),name:'Hordeng',price:15000},{id:genId(),name:'Jas',price:10000},{id:genId(),name:'Bed Cover',price:25000}]},
   transactions:[],
   sentStrukIds:[], // avoid duplicates
 }}
@@ -580,40 +629,137 @@ document.getElementById('tx-clear').addEventListener('click',()=>{if(confirm('Be
 document.getElementById('tx-save').addEventListener('click',()=>{
   if(CART.length===0) return alert('Keranjang kosong');
   const pelangganId=document.getElementById('tx-pelanggan').value; const karId=document.getElementById('tx-karyawan').value; const masuk=document.getElementById('tx-masuk').value; const selesai=document.getElementById('tx-selesai').value; const note=document.getElementById('tx-note').value;
-  const tx={id:genId(),pelangganId,karId,items:CART.map(i=>({name:i.name,price:i.price,q:i.q,cat:i.cat})),masuk,selesai,note,createdAt:new Date().toISOString()};
+  const tx={id:genId(),pelangganId,karId,items:CART.map(i=>({name:i.name,price:i.price,q:i.q,cat:i.cat})),masuk,selesai,note,createdAt:new Date().toISOString(),status:'Belum Lunas'};
   DB.transactions.push(tx); saveDB(); CART=[]; renderCart(); alert('Transaksi disimpan'); renderRiwayat();
 });
 
-// Riwayat & Struk
-let selectedTxId=null;
+// ================= PERBAIKAN UTAMA: RIWAYAT TRANSAKSI =================
 function renderRiwayat(){
-  const el=document.getElementById('riw-list');
-  el.innerHTML='';
-  const q=document.getElementById('riw-search')?document.getElementById('riw-search').value.trim().toLowerCase():'';
-  let data = DB.transactions.slice().reverse().filter(tx=>{
-    if(!q) return true;
-    return (tx.id.includes(q) || (tx.note||'').toLowerCase().includes(q));
+  const el = document.getElementById('riw-list');
+  el.innerHTML = '';
+  
+  const statusFilter = document.getElementById('riw-filter-status').value;
+  const searchQuery = document.getElementById('riw-search').value.trim().toLowerCase();
+  
+  // Filter transaksi
+  let filteredTransactions = DB.transactions.filter(tx => {
+    // Filter berdasarkan status
+    const statusMatch = statusFilter === 'all' || tx.status === statusFilter;
+    
+    // Filter berdasarkan pencarian
+    const customer = DB.customers.find(c => c.id === tx.pelangganId) || { name: '' };
+    const searchMatch = !searchQuery || 
+        tx.id.toLowerCase().includes(searchQuery) || 
+        (tx.note || '').toLowerCase().includes(searchQuery) ||
+        customer.name.toLowerCase().includes(searchQuery);
+        
+    return statusMatch && searchMatch;
   });
-  if(data.length === 0){
-    el.innerHTML = `<div class="muted">Belum ada transaksi/riwayat ditemukan.</div>`;
-    document.getElementById('struk-preview').innerHTML = '';
+  
+  // Urutkan berdasarkan tanggal dibuat (terbaru di atas)
+  filteredTransactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+  if (filteredTransactions.length === 0) {
+    el.innerHTML = '<div class="muted" style="text-align:center;padding:20px;">Tidak ada transaksi yang sesuai dengan filter</div>';
     return;
   }
-  data.forEach(tx=>{
-    const row=document.createElement('div');
-    row.className='card';
-    row.style.marginBottom='8px';
-    row.style.cursor='pointer';
-    row.addEventListener('click',()=>{selectedTxId=tx.id;showStrukPreview(tx)});
-    row.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <strong>${tx.id}</strong>
-        <div class="muted small">${tx.createdAt.split('T')[0]} • ${tx.items.length} item</div>
-      </div>
-      <div><button class="small">Pilih</button></div>
-      </div>`;
-    el.appendChild(row)
-  })
+  
+  filteredTransactions.forEach(tx => {
+    const customer = DB.customers.find(c => c.id === tx.pelangganId) || { name: 'Tidak Diketahui' };
+    const employee = DB.employees.find(e => e.id === tx.karId) || { name: 'Tidak Diketahui' };
+    
+    const total = tx.items.reduce((sum, item) => sum + (item.price * item.q), 0);
+    
+    const transactionEl = document.createElement('div');
+    transactionEl.className = 'transaction-item';
+    transactionEl.innerHTML = `
+        <div class="transaction-header">
+            <div>
+                <strong>${tx.id}</strong>
+                <span class="status-chip ${tx.status === 'Lunas' ? 'status-lunas' : 'status-belum'}">
+                    ${tx.status}
+                </span>
+            </div>
+            <div class="muted small">${formatDate(tx.createdAt)}</div>
+        </div>
+        
+        <div class="transaction-details">
+            <div>
+                <div class="muted small">Pelanggan</div>
+                <div>${escapeHtml(customer.name)}</div>
+            </div>
+            <div>
+                <div class="muted small">Karyawan</div>
+                <div>${escapeHtml(employee.name)}</div>
+            </div>
+            <div>
+                <div class="muted small">Tanggal Masuk</div>
+                <div>${tx.masuk}</div>
+            </div>
+            <div>
+                <div class="muted small">Tanggal Selesai</div>
+                <div>${tx.selesai}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom:8px">
+            <div class="muted small">Items</div>
+            <div>${tx.items.map(item => `${item.q} x ${item.name} (Rp ${formatNumber(item.price)})`).join(', ')}</div>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <div>
+                <strong>Total: Rp ${formatNumber(total)}</strong>
+            </div>
+            <div class="transaction-actions">
+                ${tx.status !== 'Lunas' ? 
+                    `<button class="mark-lunas" data-id="${tx.id}">Tandai Lunas</button>` : 
+                    ''}
+                <button class="lihat-struk" data-id="${tx.id}">Lihat Struk</button>
+            </div>
+        </div>
+        
+        ${tx.note ? `<div class="muted small" style="margin-top:8px">Catatan: ${escapeHtml(tx.note)}</div>` : ''}
+    `;
+    
+    el.appendChild(transactionEl);
+  });
+  
+  // Tambahkan event listener untuk tombol "Tandai Lunas"
+  document.querySelectorAll('.mark-lunas').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const txId = this.getAttribute('data-id');
+      markLunas(txId);
+    });
+  });
+  
+  // Tambahkan event listener untuk tombol "Lihat Struk"
+  document.querySelectorAll('.lihat-struk').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const txId = this.getAttribute('data-id');
+      const tx = DB.transactions.find(t => t.id === txId);
+      if (tx) {
+        showStrukPreview(tx);
+        // Scroll ke preview struk jika ada
+        const strukPreview = document.getElementById('struk-preview');
+        if (strukPreview) {
+          strukPreview.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+}
+
+// Fungsi untuk menandai transaksi sebagai lunas
+function markLunas(id) {
+  const tx = DB.transactions.find(t => t.id === id);
+  if (!tx) return;
+  
+  tx.status = 'Lunas';
+  saveDB();
+  
+  alert('Transaksi ' + id + ' telah ditandai sebagai LUNAS');
+  renderRiwayat(); // Perbarui tampilan
 }
 
 // =================== STRUK PREVIEW MODERN ========================
@@ -635,6 +781,7 @@ function showStrukPreview(tx){
     <div class="hr"></div>
     <div style="font-size:14px;margin-bottom:8px">
       <div><b>ID:</b> ${tx.id}</div>
+      <div><b>Status:</b> <span class="status-chip ${tx.status==='Lunas'?'status-lunas':'status-belum'}">${tx.status}</span></div>
       <div><b>Tanggal:</b> ${tx.createdAt.split('T')[0]}</div>
       <div><b>Pelanggan:</b> ${escapeHtml(cust.name)} ${cust.phone?'('+escapeHtml(cust.phone)+')':''}</div>
       <div><b>Karyawan:</b> ${escapeHtml(kar.name)}</div>
@@ -682,116 +829,8 @@ function showStrukPreview(tx){
   } else if(premium){
     html+=`<div class="hr"></div><div class="muted small">QRIS belum diunggah.</div>`;
   }
-  p.innerHTML=html
+  p.innerHTML=html;
 }
-
-// =================== WA FORMAT MODERN ===========================
-// Helper format IDR dengan titik (untuk WA)
-function formatIDR(n){
-  n = Math.round(Number(n)||0);
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-// Helper normalisasi nomor WA
-function toWaNumber(p){
-  p = String(p||'').replace(/\D+/g,'');
-  if(p.startsWith('0')) p = '62' + p.slice(1);
-  if(!p.startsWith('62')) p = '62' + p;
-  return p;
-}
-// Helper padding untuk blok monospaced
-function padRight(s,len){s=String(s||''); return s.length>=len?s.slice(0,len):s+' '.repeat(len-s.length)}
-function padLeft(s,len){s=String(s||''); return s.length>=len?s.slice(-len):' '.repeat(len-s.length)+s}
-// Builder isi struk (monospaced)
-function buildReceiptBlock(tx){
-  const cust = DB.customers.find(c=>c.id===tx.pelangganId)||{name:'-'};
-  const kar = DB.employees.find(k=>k.id===tx.karId)||{name:'-'};
-
-  const cols = {name:18, qty:3, harga:9, sub:11};
-  const line = '-'.repeat(cols.name+1+cols.qty+2+cols.harga+2+cols.sub);
-
-  const header = [
-    'ID       : '+tx.id,
-    'Tanggal  : '+tx.createdAt.split('T')[0],
-    'Pelanggan: '+(cust.name||'-'),
-    'Karyawan : '+(kar.name||'-'),
-  ];
-
-  const headCols = padRight('Layanan', cols.name)+' '+padLeft('Qty', cols.qty)+'  '+padLeft('Harga', cols.harga)+'  '+padLeft('Subtotal', cols.sub);
-
-  let total = 0;
-  const rows = tx.items.map(it=>{
-    const sub = (it.price||0)*(it.q||0);
-    total += sub;
-    return padRight(it.name, cols.name)+' '+padLeft(it.q, cols.qty)+'  '+padLeft(formatIDR(it.price), cols.harga)+'  '+padLeft(formatIDR(sub), cols.sub);
-  });
-
-  const totalLine = padRight('TOTAL', cols.name+1+cols.qty+2+cols.harga+2)+padLeft(formatIDR(total), cols.sub);
-
-  return [
-    header.join('\n'),
-    line,
-    headCols,
-    line,
-    rows.join('\n'),
-    line,
-    totalLine
-  ].filter(Boolean).join('\n');
-}
-// Teks WA lengkap (judul + blok + catatan)
-function buildWhatsAppReceiptText(tx){
-  const premium = isDeviceActivated();
-  const bizName = (premium && DB.meta.bizName) ? DB.meta.bizName : 'Kasir Laundry (LITE)';
-  const bizPhone = premium ? (DB.meta.bizPhone||'') : '';
-  const bizPlace = premium ? (DB.meta.bizPlace||'') : '';
-
-  const block = buildReceiptBlock(tx);
-  const note = tx.note ? ('Catatan: '+tx.note) : '';
-
-  const extras = [];
-  if(premium){
-    if(DB.meta.qris){ extras.push('Pembayaran via QRIS tersedia di kasir.'); }
-    else { extras.push('QRIS belum tersedia.'); }
-  }
-  extras.push('Terima kasih telah menggunakan layanan kami.');
-
-  // Header di luar code block agar tetap bold/italic
-  const header = [
-    `*${bizName}*`,
-    bizPhone ? `HP: ${bizPhone}` : '',
-    bizPlace ? bizPlace : ''
-  ].filter(Boolean).join('\n');
-
-  return [
-    header,
-    '```',
-    block,
-    '```',
-    note,
-    extras.join('\n')
-  ].filter(Boolean).join('\n');
-}
-
-function sendStrukViaWA(txId, toPhone){
-  const tx = DB.transactions.find(t=>t.id===txId); if(!tx) return alert('Transaksi tidak ditemukan');
-  if(DB.sentStrukIds.includes(txId) && !confirm('Struk sudah pernah dikirim. Kirim lagi?')) return;
-  const text = buildWhatsAppReceiptText(tx);
-  const wa = 'https://wa.me/'+toWaNumber(toPhone)+'?text='+encodeURIComponent(text);
-  DB.sentStrukIds.push(txId); saveDB(); window.open(wa,'_blank');
-}
-
-document.getElementById('struk-send-wa').addEventListener('click',()=>{
-  if(!selectedTxId) return alert('Pilih transaksi dulu');
-  const tx=DB.transactions.find(t=>t.id===selectedTxId);
-  const cust=DB.customers.find(c=>c.id===tx.pelangganId);
-  if(!cust||!cust.phone) return alert('Pelanggan tidak memiliki nomor');
-  sendStrukViaWA(selectedTxId,cust.phone);
-});
-document.getElementById('struk-send-owner').addEventListener('click',()=>{
-  if(!selectedTxId) return alert('Pilih transaksi dulu');
-  const phone = document.getElementById('owner-phone').value.trim();
-  if(!phone) return alert('Masukkan no owner');
-  sendStrukViaWA(selectedTxId,phone);
-});
 
 // ===================== LAPORAN MODERN ===========================
 // Builder teks laporan WA (harian/bulanan) dengan blok monospaced
@@ -923,7 +962,6 @@ document.getElementById('admin-del-all').addEventListener('click',()=>{
   alert('Semua riwayat transaksi berhasil DIHAPUS!');
 });
 
-
 // ================== RESET APLIKASI =======================
 document.getElementById('admin-reset-all').addEventListener('click',()=>{
   if(!confirm('Yakin ingin MERESSET aplikasi ke kondisi awal?')) return;
@@ -943,9 +981,6 @@ document.getElementById('admin-reset-all').addEventListener('click',()=>{
 // Admin: state lock/unlock buttons
 document.getElementById('admin-unlock').addEventListener('click',()=>{requireAdminAuth();});
 document.getElementById('admin-lock').addEventListener('click',()=>{lockAdminNow(); alert('Admin dikunci kembali')});
-
-
-const PREMIUM_KEY = 'kasir_laundry_premium';
 
 function savePremiumState(){
   if(DB.meta.activatedDevice){
@@ -1160,14 +1195,42 @@ function updateSplashContent(){
 // Utils
 function formatNumber(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",")}
 function escapeHtml(s){if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
-      // Register Service Worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker registered"))
-        .catch(err => console.error("SW registration failed:", err));
-    }
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+// Helper WA
+function formatIDR(n){
+  n = Math.round(Number(n)||0);
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+function toWaNumber(p){
+  p = String(p||'').replace(/\D+/g,'');
+  if(p.startsWith('0')) p = '62' + p.slice(1);
+  if(!p.startsWith('62')) p = '62' + p;
+  return p;
+}
+function padRight(s,len){s=String(s||''); return s.length>=len?s.slice(0,len):s+' '.repeat(len-s.length)}
+function padLeft(s,len){s=String(s||''); return s.length>=len?s.slice(-len):' '.repeat(len-s.length)+s}
+
+// Event listener untuk filter dan pencarian di riwayat
+document.getElementById('riw-filter-status').addEventListener('change', renderRiwayat);
+document.getElementById('riw-search').addEventListener('input', renderRiwayat);
+document.getElementById('riw-refresh').addEventListener('click', renderRiwayat);
+
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker registered"))
+    .catch(err => console.warn("SW registration failed (expected in local file system):", err));
+}
 </script>
-
-
-
-</body></html>
+</body>
+</html>
